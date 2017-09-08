@@ -160,7 +160,13 @@ io.sockets.on('connection', function (socket) {
                 socket.emit('room', {'owner_id':resp.data.userId,'color':color});
             })
             .catch(function (err) {
-                //console.log('resp err',err);
+                if (err.statusCode === 400) {
+                    // nothing
+                } else if (err.statusCode === 404) {
+                    log_errors.error('SOCKET room:'+ room.room + ' | ', err.response.body.message);
+                    msg.errors = err.response.body.message;
+                    socket.emit('message', msg);
+                }
             });
         socket.join(room.room);
         log_socket.info('user(id|name): '+room.userId + ' '+ room.username +' join to room:'+ room.room);
