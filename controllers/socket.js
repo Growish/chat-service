@@ -230,11 +230,13 @@ module.exports.controller = (socket) => {
                         token: payload.token
                     };
 
+                    logger.info('socket info', { socket: socket.locals});
+
 
                     api.token(socket.locals.token).checkToken()
                         .then(
                             function success() {
-                                logger.debug('check token completed', {
+                                logger.info('check token completed', {
                                     token: socket.locals.token,
                                     userId: payload.userId
                                 })
@@ -243,7 +245,7 @@ module.exports.controller = (socket) => {
                         )
                         .then(
                             function success(apiPayload) {
-                                logger.debug('get user completed', {
+                                logger.info('get user completed', {
                                     user: apiPayload.data
                                 })
                                 socket.locals.user = {
@@ -259,14 +261,15 @@ module.exports.controller = (socket) => {
                         )
                         .then(
                             function success(list) {
-                                logger.debug('get list completed', {
+                                logger.info('get list completed', {
                                     list
                                 })
                                 authorizeUserConnection(list, room, socket);
                             }
                         )
                         .catch(function (err) {
-
+                            
+                            console.log(err);
 
                             if (err.constructor.name === 'ApiError') {
 
