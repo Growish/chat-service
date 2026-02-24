@@ -234,12 +234,18 @@ module.exports.controller = (socket) => {
                     api.token(socket.locals.token).checkToken()
                         .then(
                             function success() {
+                                logger.debug('check token completed', {
+                                    token: socket.locals.token,
+                                    userId: payload.userId
+                                })
                                 return api.token(socket.locals.token).getUser(payload.userId);
                             }
                         )
                         .then(
                             function success(apiPayload) {
-
+                                logger.debug('get user completed', {
+                                    user: apiPayload.data
+                                })
                                 socket.locals.user = {
                                     id: apiPayload.data.id,
                                     name: apiPayload.data.firstName + " " + apiPayload.data.lastName,
@@ -253,6 +259,9 @@ module.exports.controller = (socket) => {
                         )
                         .then(
                             function success(list) {
+                                logger.debug('get list completed', {
+                                    list
+                                })
                                 authorizeUserConnection(list, room, socket);
                             }
                         )
